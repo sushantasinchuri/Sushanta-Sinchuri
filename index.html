@@ -128,5 +128,69 @@ technology, entertainment, news and creative ideas.
 <p>© 2026 Sushanta Creation. All Rights Reserved.</p>
 </footer>
 
+<!-- SUSHANTA CREATION - Dynamic Blog -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<section id="sc-blog" style="max-width:1100px;margin:40px auto;padding:20px;font-family:Arial,sans-serif;color:#111">
+  <h2 style="font-size:28px;margin-bottom:8px">Latest Articles</h2>
+  <p style="color:#666;margin-bottom:25px">AI, Technology and Digital Knowledge</p>
+  <div id="sc-posts" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
+    Loading articles...
+  </div>
+</section>
+
+<script>
+const SUPABASE_URL = "https://foxhqifcwluhnfzxacwe.supabase.co";
+const SUPABASE_KEY = "sb_publishable_ms4zgkX62TS4URjwxant5Q_jw6Nj5d_";
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function safeText(value) {
+  return String(value || "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;",
+    '"':"&quot;", "'":"&#39;"
+  }[c]));
+}
+
+async function loadArticles() {
+  const area = document.getElementById("sc-posts");
+
+  const { data, error } = await db
+    .from("posts")
+    .select("id,title,excerpt,category,cover_image_url,created_at,slug")
+    .eq("status", "published")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    area.textContent = "Articles could not load: " + error.message;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    area.textContent = "No published articles yet.";
+    return;
+  }
+
+  area.innerHTML = data.map(post => `
+    <article style="border:1px solid #eee;border-radius:12px;overflow:hidden;background:white">
+      ${post.cover_image_url ? `
+        <img src="${safeText(post.cover_image_url)}"
+          alt="${safeText(post.title)}"
+          style="width:100%;height:190px;object-fit:cover">
+      ` : ""}
+      <div style="padding:16px">
+        <small style="color:#777">${safeText(post.category)}</small>
+        <h3 style="margin:10px 0;font-size:20px">${safeText(post.title)}</h3>
+        <p style="color:#555;line-height:1.6">${safeText(post.excerpt)}</p>
+        <small style="color:#888">${new Date(post.created_at).toLocaleDateString()}</small>
+      </div>
+    </article>
+  `).join("");
+}
+
+loadArticles();
+</script>
+<!-- End Dynamic Blog -->
+
 </body>
 </html>
