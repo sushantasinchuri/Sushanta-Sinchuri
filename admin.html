@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard | SUSHANTA CREATION</title>
+  <title>Admin Pannel | Sushanta Sinchuri</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; }
@@ -128,13 +128,18 @@
       .eq("user_id", user.id)
       .maybeSingle();
 
-    if (error || !data) {
-      await db.auth.signOut();
-      document.getElementById("loginMessage").textContent =
-        "यो Account लाई Admin अनुमति छैन।";
-      return;
-    }
+    if (error) {
+  document.getElementById("loginMessage").textContent =
+    "Database Error: " + error.message;
+  console.error(error);
+  return;
+}
 
+if (!data) {
+  document.getElementById("loginMessage").textContent =
+    "Admin record भेटिएन। User ID: " + user.id;
+  return;
+}
 
     document.getElementById("loginPanel").classList.add("hidden");
     document.getElementById("dashboard").classList.remove("hidden");
