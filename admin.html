@@ -2,265 +2,430 @@
 <!DOCTYPE html>
 <html lang="ne">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Pannel | Sushanta Sinchuri</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; font-family: Arial, sans-serif;
-      background: #f3f3f3; color: #171717;
-    }
-    header {
-      background: #111; color: white;
-      padding: 20px; text-align: center;
-    }
-    main {
-      max-width: 750px; margin: 25px auto;
-      padding: 15px;
-    }
-    .panel {
-      background: white; padding: 22px;
-      border-radius: 12px; margin-bottom: 20px;
-      box-shadow: 0 2px 12px #00000010;
-    }
-    h2 { margin-top: 0; }
-    input, textarea, select {
-      width: 100%; padding: 13px; margin: 8px 0 15px;
-      border: 1px solid #ccc; border-radius: 7px;
-      font-size: 16px;
-    }
-    textarea { min-height: 150px; }
-    button {
-      background: #111; color: white; border: 0;
-      padding: 13px 18px; border-radius: 7px;
-      font-size: 15px; cursor: pointer;
-      margin: 5px 5px 5px 0;
-    }
-    button.secondary { background: #666; }
-    .hidden { display: none; }
-    .message { margin: 12px 0; font-weight: bold; }
-    .post {
-      border: 1px solid #ddd; padding: 14px;
-      border-radius: 8px; margin-top: 12px;
-    }
-    .muted { color: #666; font-size: 13px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SUSHANTA CREATION - Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f3f3;color:#171717;font-family:Arial,sans-serif}
+header{background:#111;color:white;padding:20px;text-align:center}
+main{max-width:850px;margin:20px auto;padding:12px}
+.panel{background:white;padding:20px;border-radius:12px;margin-bottom:18px;box-shadow:0 2px 10px #0001}
+h2{margin-top:0}
+input,textarea,select{width:100%;padding:13px;margin:8px 0 15px;border:1px solid #ccc;border-radius:7px;font-size:16px}
+textarea{min-height:130px}
+button{border:0;border-radius:7px;padding:11px 15px;background:#111;color:white;margin:4px;cursor:pointer;font-size:14px}
+.secondary{background:#666}
+.danger{background:#bd2525}
+.green{background:#187b43}
+.hidden{display:none}
+.message{font-weight:bold;margin:12px 0;overflow-wrap:anywhere}
+.post{border:1px solid #ddd;border-radius:9px;padding:14px;margin-top:12px}
+.post img{width:100%;max-height:180px;object-fit:cover;border-radius:7px}
+.status{font-size:13px;color:#555}
+#preview{max-width:100%;max-height:200px;display:none;margin:10px 0;border-radius:8px}
+.small{font-size:13px;color:#666}
+</style>
 </head>
 <body>
 
 <header>
-  <h2>Sushanta Sinchuri</h2>
-  <p>Admin Pannel</p>
+<h2>SUSHANTA CREATION</h2>
+<p>Admin Dashboard</p>
 </header>
 
 <main>
-  <section class="panel" id="loginPanel">
-    <h2>Admin Login</h2>
-    <input id="email" type="email" placeholder="Email address">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <p id="loginMessage" class="message"></p>
-  </section>
+<section class="panel" id="loginPanel">
+<h2>Admin Login</h2>
+<input id="email" type="email" placeholder="Email address">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<p id="loginMessage" class="message"></p>
+</section>
 
-  <section id="dashboard" class="hidden">
-    <div class="panel">
-      <h2>Welcome, Admin</h2>
-      <button class="secondary" onclick="logout()">Logout</button>
-    </div>
+<section id="dashboard" class="hidden">
 
-    <div class="panel">
-      <h2>नयाँ लेख लेख्नुहोस्</h2>
+<div class="panel">
+<h2>Welcome, Admin</h2>
+<button class="secondary" onclick="logout()">Logout</button>
+</div>
 
-      <label>लेखको शीर्षक</label>
-      <input id="title" placeholder="लेखको शीर्षक लेख्नुहोस्">
+<div class="panel">
+<h2 id="formHeading">नयाँ लेख लेख्नुहोस्</h2>
 
-      <label>छोटो विवरण</label>
-      <textarea id="excerpt" placeholder="लेखको छोटो परिचय"></textarea>
+<label>लेखको शीर्षक</label>
+<input id="title" placeholder="लेखको शीर्षक">
 
-      <label>पूरा लेख</label>
-      <textarea id="content" placeholder="यहाँ आफ्नो लेख लेख्नुहोस्"></textarea>
+<label>छोटो विवरण</label>
+<textarea id="excerpt" placeholder="लेखको छोटो परिचय"></textarea>
 
-      <label>Cover Image URL (Optional)</label>
-      <input id="cover" type="url" placeholder="https://example.com/image.jpg">
+<label>पूरा लेख</label>
+<textarea id="content" placeholder="यहाँ पूरा लेख लेख्नुहोस्"></textarea>
 
-      <label>Category</label>
-      <input id="category" placeholder="जस्तै: Technology, News, Entertainment">
+<label>Cover Photo — मोबाइल Gallery बाट छान्नुहोस्</label>
+<input id="coverFile" type="file" accept="image/*">
+<img id="preview" alt="Photo preview">
+<p class="small">अधिकतम फोटो आकार: 5 MB</p>
 
-      <label>स्थिति</label>
-      <select id="status">
-        <option value="draft">Draft (पछि प्रकाशित गर्ने)</option>
-        <option value="published">Publish (प्रकाशित गर्ने)</option>
-      </select>
+<label>Category</label>
+<input id="category" placeholder="Technology, News, Entertainment">
 
-      <button onclick="savePost()">लेख Save गर्नुहोस्</button>
-      <p id="saveMessage" class="message"></p>
-    </div>
+<label>स्थिति</label>
+<select id="status">
+<option value="draft">Draft</option>
+<option value="published">Published</option>
+</select>
 
-    <div class="panel">
-      <h2>तपाईंका लेखहरू</h2>
-      <button class="secondary" onclick="loadPosts()">Refresh</button>
-      <div id="postsList">Loading...</div>
-    </div>
-  </section>
+<button id="saveButton" onclick="savePost()">लेख Save गर्नुहोस्</button>
+<button id="cancelButton" class="secondary hidden" onclick="resetForm()">Cancel Edit</button>
+<p id="saveMessage" class="message"></p>
+</div>
+
+<div class="panel">
+<h2>तपाईंका लेखहरू</h2>
+<button class="secondary" onclick="loadPosts()">Refresh</button>
+<div id="postsList">Loading...</div>
+</div>
+
+</section>
 </main>
 
 <script>
-  // यहाँ आफ्नै Supabase जानकारी राख्नुहोस्
-  const SUPABASE_URL = "https://foxhqifcwluhnfzxacwe.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_ms4zgkX62TS4URjwxant5Q_jw6Nj5d_";
+const SUPABASE_URL = "https://foxhqifcwluhnfzxacwe.supabase.co";
+const SUPABASE_KEY = "sb_publishable_ms4zgkX62TS4URjwxant5Q_jw6Nj5d_";
 
-  const db = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-  async function checkAdmin() {
-    const { data: sessionData } = await db.auth.getSession();
-    const user = sessionData.session?.user;
+let editingPost = null;
+let currentUser = null;
 
-    if (!user) return;
-
-    const { data, error } = await db
-      .from("admin_users")
-      .select("user_id")
-      .eq("user_id", user.id)
-      .maybeSingle();
-
-    if (error) {
-  document.getElementById("loginMessage").textContent =
-    "Database Error: " + error.message;
-  console.error(error);
-  return;
+function message(id, text) {
+  document.getElementById(id).textContent = text;
 }
 
-if (!data) {
-  document.getElementById("loginMessage").textContent =
-    "Admin record भेटिएन। User ID: " + user.id;
-  return;
-}
+async function checkAdmin() {
+  const {data: sessionData, error: sessionError} =
+    await db.auth.getSession();
 
-    document.getElementById("loginPanel").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
-    loadPosts();
+  if (sessionError) {
+    message("loginMessage", sessionError.message);
+    return;
   }
 
-  async function login() {
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+  const user = sessionData.session?.user;
+  if (!user) return;
 
-    const msg = document.getElementById("loginMessage");
-    msg.textContent = "Login हुँदैछ...";
+  currentUser = user;
 
-    const { error } = await db.auth.signInWithPassword({
-      email, password
+  const {data, error} = await db
+    .from("admin_users")
+    .select("user_id")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    message("loginMessage", "Database Error: " + error.message);
+    return;
+  }
+
+  if (!data) {
+    message("loginMessage", "यो Account Admin होइन।");
+    return;
+  }
+
+  document.getElementById("loginPanel").classList.add("hidden");
+  document.getElementById("dashboard").classList.remove("hidden");
+
+  loadPosts();
+}
+
+async function login() {
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value;
+
+  message("loginMessage", "Login हुँदैछ...");
+
+  const {error} = await db.auth.signInWithPassword({
+    email, password
+  });
+
+  if (error) {
+    message("loginMessage", error.message);
+    return;
+  }
+
+  await checkAdmin();
+}
+
+async function logout() {
+  await db.auth.signOut();
+  location.reload();
+}
+
+function makeSlug(value) {
+  return value.toLowerCase()
+    .trim()
+    .replace(/[^\w\u0900-\u097f -]/g, "")
+    .replace(/\s+/g, "-") + "-" + Date.now();
+}
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[c]);
+}
+
+document.getElementById("coverFile").addEventListener("change", function() {
+  const file = this.files[0];
+  const preview = document.getElementById("preview");
+
+  if (!file) {
+    preview.style.display = "none";
+    return;
+  }
+
+  if (!file.type.startsWith("image/")) {
+    message("saveMessage", "कृपया Image फाइल मात्र छान्नुहोस्।");
+    this.value = "";
+    return;
+  }
+
+  if (file.size > 5 * 1024 * 1024) {
+    message("saveMessage", "फोटो 5 MB भन्दा सानो हुनुपर्छ।");
+    this.value = "";
+    return;
+  }
+
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = "block";
+  message("saveMessage", "फोटो छानियो।");
+});
+
+async function uploadPhoto(file) {
+  if (!file) return null;
+
+  const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const path = currentUser.id + "/" + Date.now() + "-" + cleanName;
+
+  const {error} = await db.storage
+    .from("post-images")
+    .upload(path, file, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: file.type
     });
 
-    if (error) {
-      msg.textContent = "Login भएन: " + error.message;
-      return;
-    }
+  if (error) throw error;
 
-    await checkAdmin();
+  const {data} = db.storage
+    .from("post-images")
+    .getPublicUrl(path);
 
-    if (!document.getElementById("dashboard").classList.contains("hidden")) {
-      msg.textContent = "";
-    }
+  return data.publicUrl;
+}
+
+async function savePost() {
+  const title = document.getElementById("title").value.trim();
+  const excerpt = document.getElementById("excerpt").value.trim();
+  const content = document.getElementById("content").value.trim();
+  const category = document.getElementById("category").value.trim() || "General";
+  const status = document.getElementById("status").value;
+  const file = document.getElementById("coverFile").files[0];
+
+  if (!title || !content) {
+    message("saveMessage", "शीर्षक र पूरा लेख अनिवार्य छन्।");
+    return;
   }
 
-  async function logout() {
-    await db.auth.signOut();
-    location.reload();
+  if (file && (!file.type.startsWith("image/") || file.size > 5 * 1024 * 1024)) {
+    message("saveMessage", "सही Image छान्नुहोस्। आकार 5 MB भन्दा कम हुनुपर्छ।");
+    return;
   }
 
-  function makeSlug(text) {
-    return text.toLowerCase()
-      .trim()
-      .replace(/[^\w\u0900-\u097f -]/g, "")
-      .replace(/\s+/g, "-") + "-" + Date.now();
-  }
+  const button = document.getElementById("saveButton");
+  button.disabled = true;
+  message("saveMessage", "Save हुँदैछ...");
 
-  async function savePost() {
-    const title = document.getElementById("title").value.trim();
-    const excerpt = document.getElementById("excerpt").value.trim();
-    const content = document.getElementById("content").value.trim();
-    const cover = document.getElementById("cover").value.trim();
-    const category = document.getElementById("category").value.trim() || "General";
-    const status = document.getElementById("status").value;
-    const msg = document.getElementById("saveMessage");
+  try {
+    let coverUrl = editingPost?.cover_image_url || null;
 
-    if (!title || !content) {
-      msg.textContent = "शीर्षक र पूरा लेख अनिवार्य छन्।";
-      return;
+    if (file) {
+      coverUrl = await uploadPhoto(file);
     }
 
-    msg.textContent = "Save हुँदैछ...";
-
-    const { error } = await db.from("posts").insert({
+    const postData = {
       title,
-      slug: makeSlug(title),
       excerpt,
       content,
-      cover_image_url: cover || null,
       category,
+      cover_image_url: coverUrl,
       status,
-      published_at: status === "published" ? new Date().toISOString() : null
-    });
+      published_at: status === "published"
+        ? (editingPost?.published_at || new Date().toISOString())
+        : null
+    };
 
-    if (error) {
-      msg.textContent = "समस्या आयो: " + error.message;
-      return;
+    let result;
+
+    if (editingPost) {
+      result = await db.from("posts")
+        .update(postData)
+        .eq("id", editingPost.id);
+    } else {
+      postData.slug = makeSlug(title);
+      result = await db.from("posts").insert(postData);
     }
 
-    msg.textContent = "लेख सफलतापूर्वक Save भयो।";
-    document.getElementById("title").value = "";
-    document.getElementById("excerpt").value = "";
-    document.getElementById("content").value = "";
-    document.getElementById("cover").value = "";
-    document.getElementById("category").value = "";
+    if (result.error) throw result.error;
 
-    loadPosts();
+    message("saveMessage", "लेख सफलतापूर्वक Save भयो!");
+    resetForm();
+    await loadPosts();
+
+  } catch (error) {
+    message("saveMessage", "Error: " + error.message);
+  } finally {
+    button.disabled = false;
+  }
+}
+
+async function loadPosts() {
+  const list = document.getElementById("postsList");
+  list.textContent = "Loading...";
+
+  const {data, error} = await db
+    .from("posts")
+    .select("id,title,status,created_at,cover_image_url")
+    .order("created_at", {ascending:false});
+
+  if (error) {
+    list.textContent = "Error: " + error.message;
+    return;
   }
 
-  async function loadPosts() {
-    const list = document.getElementById("postsList");
-    list.textContent = "Loading...";
-
-    const { data, error } = await db
-      .from("posts")
-      .select("id, title, status, created_at")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      list.textContent = "लेख लोड भएन: " + error.message;
-      return;
-    }
-
-    if (!data.length) {
-      list.textContent = "अहिलेसम्म कुनै लेख छैन।";
-      return;
-    }
-
-    list.innerHTML = data.map(post => `
-      <div class="post">
-        <strong>${escapeHTML(post.title)}</strong>
-        <p class="muted">
-          Status: ${escapeHTML(post.status)}
-        </p>
-      </div>
-    `).join("");
+  if (!data.length) {
+    list.textContent = "अहिलेसम्म कुनै लेख छैन।";
+    return;
   }
 
-  function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, char => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;",
-      '"': "&quot;", "'": "&#39;"
-    })[char]);
+  list.innerHTML = data.map(post => `
+    <div class="post">
+      ${post.cover_image_url
+        ? `<img src="${escapeHTML(post.cover_image_url)}" alt="Cover">`
+        : ""}
+      <h3>${escapeHTML(post.title)}</h3>
+      <p class="status">Status: ${escapeHTML(post.status)}</p>
+      <button onclick="editPost('${post.id}')">Edit</button>
+      <button class="green" onclick="changeStatus('${post.id}','${post.status === "published" ? "draft" : "published"}')">
+        ${post.status === "published" ? "Unpublish" : "Publish"}
+      </button>
+      <button class="danger" onclick="deletePost('${post.id}')">Delete</button>
+    </div>
+  `).join("");
+}
+
+async function editPost(id) {
+  message("saveMessage", "लेख खोल्दैछ...");
+
+  const {data, error} = await db
+    .from("posts")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (error) {
+    message("saveMessage", error.message);
+    return;
   }
 
-  checkAdmin();
+  editingPost = data;
+
+  document.getElementById("title").value = data.title || "";
+  document.getElementById("excerpt").value = data.excerpt || "";
+  document.getElementById("content").value = data.content || "";
+  document.getElementById("category").value = data.category || "";
+  document.getElementById("status").value = data.status || "draft";
+  document.getElementById("coverFile").value = "";
+
+  const preview = document.getElementById("preview");
+
+  if (data.cover_image_url) {
+    preview.src = data.cover_image_url;
+    preview.style.display = "block";
+  } else {
+    preview.style.display = "none";
+  }
+
+  document.getElementById("formHeading").textContent = "लेख Edit गर्नुहोस्";
+  document.getElementById("saveButton").textContent = "Update गर्नुहोस्";
+  document.getElementById("cancelButton").classList.remove("hidden");
+
+  message("saveMessage", "लेख Edit गर्न तयार छ।");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function changeStatus(id, newStatus) {
+  const update = {
+    status: newStatus,
+    published_at: newStatus === "published"
+      ? new Date().toISOString()
+      : null
+  };
+
+  const {error} = await db.from("posts")
+    .update(update)
+    .eq("id", id);
+
+  if (error) {
+    alert("Error: " + error.message);
+    return;
+  }
+
+  await loadPosts();
+}
+
+async function deletePost(id) {
+  if (!confirm("यो लेख Delete गर्ने हो?")) return;
+
+  const {error} = await db.from("posts")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    alert("Error: " + error.message);
+    return;
+  }
+
+  if (editingPost?.id === id) resetForm();
+
+  alert("लेख Delete भयो।");
+  await loadPosts();
+}
+
+function resetForm() {
+  editingPost = null;
+
+  ["title","excerpt","content","category","coverFile"].forEach(id => {
+    document.getElementById(id).value = "";
+  });
+
+  document.getElementById("status").value = "draft";
+  document.getElementById("preview").style.display = "none";
+  document.getElementById("formHeading").textContent = "नयाँ लेख लेख्नुहोस्";
+  document.getElementById("saveButton").textContent = "लेख Save गर्नुहोस्";
+  document.getElementById("cancelButton").classList.add("hidden");
+  message("saveMessage", "");
+}
+
+checkAdmin();
 </script>
-
 </body>
 </html>
