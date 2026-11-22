@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Sushanta Creation - Blog, News, Technology and Entertainment">
+<title>Sushanta Creation | Official Website</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:#fff;color:#171717}
+header{border-bottom:1px solid #eee;padding:20px 6%}
+nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
+.logo{font-size:24px;font-weight:900;letter-spacing:-1px}
+nav a{color:#222;text-decoration:none;margin-left:18px;font-size:14px}
+.hero{background:#111;color:#fff;padding:90px 7%;text-align:center}
+.hero h1{font-size:clamp(35px,7vw,65px);margin-bottom:18px}
+.hero p{color:#ccc;font-size:17px;line-height:1.7}
+.hero button{margin-top:28px;background:white;color:#111;border:0;padding:14px 28px;border-radius:4px;font-weight:bold;cursor:pointer}
+section{padding:65px 7%}
+.section-title{font-size:30px;margin-bottom:12px}
+.subtitle{color:#777;margin-bottom:30px}
+.categories{display:flex;gap:12px;flex-wrap:wrap;margin:25px 0}
+.categories span{border:1px solid #ddd;padding:10px 18px;border-radius:25px;font-size:13px}
+.posts{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:25px}
+.card{border:1px solid #eee;border-radius:8px;overflow:hidden}
+.card img{width:100%;height:180px;object-fit:cover}
+.card-content{padding:20px}
+.card small{color:#888}
+.card h3{font-size:20px;margin:12px 0}
+.card p{color:#666;line-height:1.6;font-size:14px}
+.card a{display:inline-block;margin-top:15px;color:#111;font-weight:bold;text-decoration:none}
+.about{background:#f5f5f5;text-align:center}
+.about p{max-width:650px;margin:15px auto;color:#666;line-height:1.8}
+footer{background:#111;color:white;text-align:center;padding:35px 15px}
+footer p{color:#aaa;margin-top:10px;font-size:13px}
+@media(max-width:600px){
+header{padding:18px 5%}
+nav a{margin-left:8px;font-size:12px}
+.hero{padding:70px 6%}
+section{padding:45px 6%}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<nav>
+<div class="logo">SUSHANTA CREATION.</div>
+<div>
+<a href="#home">Home</a>
+<a href="#blog">Blog</a>
+<a href="#about">About</a>
+<a href="#contact">Contact</a>
+</div>
+</nav>
+</header>
+
+<div class="hero" id="home">
+<h1>Welcome to Sushanta Creation</h1>
+<p>Ideas, Stories, Technology & Creativity.<br>
+नयाँ विचार, जानकारी र मनोरञ्जनको संसारमा स्वागत छ।</p>
+<button onclick="document.getElementById('blog').scrollIntoView({behavior:'smooth'})">
+Explore Articles →
+</button>
+</div>
+
+<section id="blog">
+<h2 class="section-title">Latest Articles</h2>
+<p class="subtitle">नयाँ लेख तथा जानकारीहरू पढ्नुहोस्।</p>
+
+<div class="categories">
+<span>All Posts</span>
+<span>Technology</span>
+<span>Entertainment</span>
+<span>News</span>
+<span>Lifestyle</span>
+</div>
+
+<div class="posts">
+<div class="card">
+<img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=700" alt="Technology">
+<div class="card-content">
+<small>TECHNOLOGY</small>
+<h3>Technology & Innovation</h3>
+<p>Discover the latest technology, digital tools and AI updates.</p>
+<a href="#contact">Read More →</a>
+</div>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=700" alt="Travel">
+<div class="card-content">
+<small>LIFESTYLE</small>
+<h3>Stories & Lifestyle</h3>
+<p>Explore interesting stories, travel and everyday inspiration.</p>
+<a href="#contact">Read More →</a>
+</div>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=700" alt="Entertainment">
+<div class="card-content">
+<small>ENTERTAINMENT</small>
+<h3>Entertainment & Creativity</h3>
+<p>Enjoy creative content, entertainment and fresh ideas.</p>
+<a href="#contact">Read More →</a>
+</div>
+</div>
+</div>
+</section>
+
+<section class="about" id="about">
+<h2 class="section-title">About Sushanta Creation</h2>
+<p>
+Sushanta Creation is a digital platform for blogs,
+technology, entertainment, news and creative ideas.
+हाम्रो उद्देश्य उपयोगी जानकारी र सिर्जनात्मक सामग्री
+तपाईंहरूसम्म पुर्‍याउनु हो।
+</p>
+</section>
+
+<footer id="contact">
+<h2>SUSHANTA CREATION</h2>
+<p>Creativity • Knowledge • Inspiration</p>
+<p>© 2026 Sushanta Creation. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>
