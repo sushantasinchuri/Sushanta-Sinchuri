@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | SUSHANTA CREATION</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: Arial, sans-serif;
+      background: #f3f3f3; color: #171717;
+    }
+    header {
+      background: #111; color: white;
+      padding: 20px; text-align: center;
+    }
+    main {
+      max-width: 750px; margin: 25px auto;
+      padding: 15px;
+    }
+    .panel {
+      background: white; padding: 22px;
+      border-radius: 12px; margin-bottom: 20px;
+      box-shadow: 0 2px 12px #00000010;
+    }
+    h2 { margin-top: 0; }
+    input, textarea, select {
+      width: 100%; padding: 13px; margin: 8px 0 15px;
+      border: 1px solid #ccc; border-radius: 7px;
+      font-size: 16px;
+    }
+    textarea { min-height: 150px; }
+    button {
+      background: #111; color: white; border: 0;
+      padding: 13px 18px; border-radius: 7px;
+      font-size: 15px; cursor: pointer;
+      margin: 5px 5px 5px 0;
+    }
+    button.secondary { background: #666; }
+    .hidden { display: none; }
+    .message { margin: 12px 0; font-weight: bold; }
+    .post {
+      border: 1px solid #ddd; padding: 14px;
+      border-radius: 8px; margin-top: 12px;
+    }
+    .muted { color: #666; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h2>SUSHANTA CREATION</h2>
+  <p>Admin Dashboard</p>
+</header>
+
+<main>
+  <section class="panel" id="loginPanel">
+    <h2>Admin Login</h2>
+    <input id="email" type="email" placeholder="Email address">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="loginMessage" class="message"></p>
+  </section>
+
+  <section id="dashboard" class="hidden">
+    <div class="panel">
+      <h2>Welcome, Admin</h2>
+      <button class="secondary" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="panel">
+      <h2>नयाँ लेख लेख्नुहोस्</h2>
+
+      <label>लेखको शीर्षक</label>
+      <input id="title" placeholder="लेखको शीर्षक लेख्नुहोस्">
+
+      <label>छोटो विवरण</label>
+      <textarea id="excerpt" placeholder="लेखको छोटो परिचय"></textarea>
+
+      <label>पूरा लेख</label>
+      <textarea id="content" placeholder="यहाँ आफ्नो लेख लेख्नुहोस्"></textarea>
+
+      <label>Cover Image URL (Optional)</label>
+      <input id="cover" type="url" placeholder="https://example.com/image.jpg">
+
+      <label>Category</label>
+      <input id="category" placeholder="जस्तै: Technology, News, Entertainment">
+
+      <label>स्थिति</label>
+      <select id="status">
+        <option value="draft">Draft (पछि प्रकाशित गर्ने)</option>
+        <option value="published">Publish (प्रकाशित गर्ने)</option>
+      </select>
+
+      <button onclick="savePost()">लेख Save गर्नुहोस्</button>
+      <p id="saveMessage" class="message"></p>
+    </div>
+
+    <div class="panel">
+      <h2>तपाईंका लेखहरू</h2>
+      <button class="secondary" onclick="loadPosts()">Refresh</button>
+      <div id="postsList">Loading...</div>
+    </div>
+  </section>
+</main>
+
+<script>
+  // यहाँ आफ्नै Supabase जानकारी राख्नुहोस्
+  const SUPABASE_URL = "https://foxhqifcwluhnfzxacwe.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_ms4zgkX62TS4URjwxant5Q_jw6Nj5d_";
+
+  const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  async function checkAdmin() {
+    const { data: sessionData } = await db.auth.getSession();
+    const user = sessionData.session?.user;
+
+    if (!user) return;
+
+    const { data, error } = await db
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+    if (error || !data) {
+      await db.auth.signOut();
+      document.getElementById("loginMessage").textContent =
+        "यो Account लाई Admin अनुमति छैन।";
+      return;
+    }
+
+    document.getElementById("loginPanel").classList.add("hidden");
+    document.getElementById("dashboard").classList.remove("hidden");
+    loadPosts();
+  }
+
+  async function login() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    const msg = document.getElementById("loginMessage");
+    msg.textContent = "Login हुँदैछ...";
+
+    const { error } = await db.auth.signInWithPassword({
+      email, password
+    });
+
+    if (error) {
+      msg.textContent = "Login भएन: " + error.message;
+      return;
+    }
+
+    await checkAdmin();
+
+    if (!document.getElementById("dashboard").classList.contains("hidden")) {
+      msg.textContent = "";
+    }
+  }
+
+  async function logout() {
+    await db.auth.signOut();
+    location.reload();
+  }
+
+  function makeSlug(text) {
+    return text.toLowerCase()
+      .trim()
+      .replace(/[^\w\u0900-\u097f -]/g, "")
+      .replace(/\s+/g, "-") + "-" + Date.now();
+  }
+
+  async function savePost() {
+    const title = document.getElementById("title").value.trim();
+    const excerpt = document.getElementById("excerpt").value.trim();
+    const content = document.getElementById("content").value.trim();
+    const cover = document.getElementById("cover").value.trim();
+    const category = document.getElementById("category").value.trim() || "General";
+    const status = document.getElementById("status").value;
+    const msg = document.getElementById("saveMessage");
+
+    if (!title || !content) {
+      msg.textContent = "शीर्षक र पूरा लेख अनिवार्य छन्।";
+      return;
+    }
+
+    msg.textContent = "Save हुँदैछ...";
+
+    const { error } = await db.from("posts").insert({
+      title,
+      slug: makeSlug(title),
+      excerpt,
+      content,
+      cover_image_url: cover || null,
+      category,
+      status,
+      published_at: status === "published" ? new Date().toISOString() : null
+    });
+
+    if (error) {
+      msg.textContent = "समस्या आयो: " + error.message;
+      return;
+    }
+
+    msg.textContent = "लेख सफलतापूर्वक Save भयो।";
+    document.getElementById("title").value = "";
+    document.getElementById("excerpt").value = "";
+    document.getElementById("content").value = "";
+    document.getElementById("cover").value = "";
+    document.getElementById("category").value = "";
+
+    loadPosts();
+  }
+
+  async function loadPosts() {
+    const list = document.getElementById("postsList");
+    list.textContent = "Loading...";
+
+    const { data, error } = await db
+      .from("posts")
+      .select("id, title, status, created_at")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      list.textContent = "लेख लोड भएन: " + error.message;
+      return;
+    }
+
+    if (!data.length) {
+      list.textContent = "अहिलेसम्म कुनै लेख छैन।";
+      return;
+    }
+
+    list.innerHTML = data.map(post => `
+      <div class="post">
+        <strong>${escapeHTML(post.title)}</strong>
+        <p class="muted">
+          Status: ${escapeHTML(post.status)}
+        </p>
+      </div>
+    `).join("");
+  }
+
+  function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;",
+      '"': "&quot;", "'": "&#39;"
+    })[char]);
+  }
+
+  checkAdmin();
+</script>
+
+</body>
+</html>
